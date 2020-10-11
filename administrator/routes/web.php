@@ -22,6 +22,7 @@ $router->group(['prefix'=>'api/admin'], function() use($router)
     $router->post('/createNurseries','NurseryController@createNurseries');
     $router->put('/editNurseries','NurseryController@editNurseries');
     $router->get('/getCategories/{Nursery_ID}','CategoryController@showCategories');
+    $router->get('/getCategoryDetails/{Category_ID}','CategoryController@showCategoryDetails');
     $router->post('/createCategories','CategoryController@createCategories');
     $router->put('/editCategories','CategoryController@editCategories');
     $router->delete('/deleteCategories','CategoryController@deleteCategories');

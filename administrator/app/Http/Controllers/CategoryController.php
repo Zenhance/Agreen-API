@@ -28,6 +28,16 @@ class CategoryController extends Controller
         );
     }
 
+    public function showCategoryDetails(Request $request)
+    {
+        return response() -> json(
+            DB::table('category')
+            ->select('Title','Image')
+            ->where('ID','=',$request->Category_ID)
+            ->get()
+        );
+    }
+
     public function createCategories(Request $request)
     {
         $id = DB::table('category')
