@@ -52,7 +52,6 @@ class PlantController extends Controller
                     'Title' => $request->Title,
                     'Description' => $request->Description,
                     'Price' => $request->Price,
-                    'Image' => $request->Image,
                     'Category_ID' => $request->Category_ID
                 )
             );
@@ -81,9 +80,7 @@ class PlantController extends Controller
                 return response()->json($imagepath);
             }
         } else
-            dd('Request has no file');
-
-        dd($title);
+           return response()->json("No file selected");
     }
 
     public function editPlants(Request $request)
@@ -95,16 +92,28 @@ class PlantController extends Controller
                 $plant->Title = $request->Title;
             if ($request->Description != $plant->Description && $request->Description != null)
                 $plant->Description = $request->Description;
-            if ($request->Image != $plant->Image && $request->Image != null)
-                $plant->Image = $request->Image;
             if ($request->Price != $plant->Price && $request->Price != null)
                 $plant->Price = $request->Price;
 
-            DB::table('plant')
-                ->where('ID', $request->ID)
-                ->update(['Title' => $plant->Title, 'Image' => $plant->Image, 'Description' => $plant->Description, 'Price' => $plant->Price]);
+            if ($request->hasFile('Image')) {
+                $filename = $request->ID . '-' . $plant->Title . '.' . $request->file('Image')->getClientOriginalExtension();
+                $imagepath = url('/public/images/' . $filename);
+                $path = $request->file('Image')->move('public/images', $filename);
 
-            return response()->json($plant);
+                if ($path) {
+                    DB::table('plant')
+                        ->where('ID', $request->ID)
+                        ->update(['Title' => $plant->Title, 'Image' => $imagepath, 'Description' => $plant->Description, 'Price' => $plant->Price]);
+                }
+                return response()->json(Plant::find($request->ID));
+            } 
+            else {
+                DB::table('plant')
+                    ->where('ID', $request->ID)
+                    ->update(['Title' => $plant->Title,'Description' => $plant->Description, 'Price' => $plant->Price]);
+
+                return response()->json(Plant::find($request->ID));
+            }
         } else
             return response()->json("Plant does not exist");
     }

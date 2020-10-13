@@ -24,12 +24,13 @@ $router->group(['prefix'=>'api/admin'], function() use($router)
     $router->get('/getCategories/{Nursery_ID}','CategoryController@showCategories');
     $router->get('/getCategoryDetails/{Category_ID}','CategoryController@showCategoryDetails');
     $router->post('/createCategories','CategoryController@createCategories');
-    $router->put('/editCategories','CategoryController@editCategories');
+    $router->post('/uploadCategoryImage','CategoryController@uploadCategoryImage');
+    $router->post('/editCategories','CategoryController@editCategories');
     $router->delete('/deleteCategories','CategoryController@deleteCategories');
     $router->get('/getPlants/{Category_ID}','PlantController@getPlants');
     $router->get('/getPlantDetails/{Plant_ID}','PlantController@getPlantDetails');
     $router->post('/createPlants','PlantController@createPlants');
-    $router->put('/editPlants','PlantController@editPlants');
+    $router->post('/editPlants','PlantController@editPlants');
     $router->post('/uploadPlantImage','PlantController@uploadPlantImage');
     $router->delete('/deletePlants','PlantController@deletePlants');
 });

@@ -44,12 +44,35 @@ class CategoryController extends Controller
             ->insertGetId(
                 array(
                     'Title' => $request->Title,
-                    'Image' => $request->Image,
                     'Nursery_ID' => $request->Nursery_ID
                 )
             );
 
         return response()->json($id);
+    }
+
+    public function uploadCategoryImage(Request $request)
+    {
+        $id = $request->ID;
+        $title = DB::table('category')
+            ->where('ID', $id)
+            ->value('Title');
+
+        if ($request->hasFile('Image')) {
+            $filename = $id . '-' . $title . '.' . $request->file('Image')->getClientOriginalExtension();
+            $imagepath = url('/public/images/' . $filename);
+            $path = $request->file('Image')->move('public/images', $filename);
+
+            if ($path) {
+                DB::table('category')
+                    ->where('ID', $request->ID)
+                    ->update(['Image' => $imagepath]);
+
+                return response()->json($imagepath);
+            }
+        } 
+        else
+            return response()->json("No file selected");
     }
 
     public function editCategories(Request $request)
@@ -59,15 +82,30 @@ class CategoryController extends Controller
         if ($category) {
             if ($request->Title != $category->Title && $request->Title != null)
                 $category->Title = $request->Title;
-            if ($request->Image != $category->Image && $request->Image != null)
-                $category->Image = $request->Image;
+            
+            if($request->hasFile('Image'))
+            {
+                $filename = $request->ID . '-' . $category->Title . '.' . $request->file('Image')->getClientOriginalExtension();
+                $imagepath = url('/public/images/' . $filename);
+                $path = $request->file('Image')->move('public/images', $filename);
 
-            DB::table('category')
-                ->where('ID', $request->ID)
-                ->update(['Title' => $category->Title, 'Image' => $category->Image]);
+                if ($path) {
+                    DB::table('category')
+                        ->where('ID', $request->ID)
+                        ->update(['Title' => $category->Title, 'Image' => $imagepath]);
+                }
+                return response()->json(Category::find($request->ID));
+            }
 
-            return response()->json($category);
-        } else
+            else {
+                DB::table('category')
+                    ->where('ID', $request->ID)
+                    ->update(['Title' => $category->Title]);
+
+                return response()->json(Category::find($request->ID));
+            }
+        } 
+        else
             return response()->json("Category does not exist");
     }
 
