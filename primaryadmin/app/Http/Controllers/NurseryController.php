@@ -21,7 +21,7 @@ class NurseryController extends Controller
 
     //
 
-    public function getNurseries(Request $request)
+    public function getNurseries()
     {
         return response()->json(
             DB::table('nursery')
@@ -36,6 +36,23 @@ class NurseryController extends Controller
                 )
                 ->get()
         );
+    }
+
+    public function getNursery(Request $request)
+    {
+        return response()->json(
+            DB::table('nursery')
+            ->select(
+                'Name',
+                'Address',
+                'Phone',
+                'Banner',
+                DB::raw('X(Location) as latitude'),
+                DB::raw('Y(Location) as longitude')
+            )
+            ->where('ID',$request->ID)
+            ->get()
+            );
     }
 
     public function createNurseries(Request $request)

@@ -21,9 +21,12 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix'=>'api/primaryadmin'], function() use($router)
 {
     $router->get('/getNurseries','NurseryController@getNurseries');
+    $router->get('/getNurseries/{ID}','NurseryController@getNursery');
     $router->post('/createNurseries','NurseryController@createNurseries');
     $router->post('/editNurseries','NurseryController@editNurseries');
     $router->post('/uploadNurseryBanner','NurseryController@uploadNurseryBanner');
+    $router->get('/getAdmins','AdminController@getAdmins');
+    $router->get('/getAdmins/{ID}','AdminController@getAdmin');
     $router->post('/createAdmin','AdminController@createAdmin');
     $router->get('/getCategories/{Nursery_ID}','CategoryController@showCategories');
     $router->get('/getCategoryDetails/{Category_ID}','CategoryController@showCategoryDetails');

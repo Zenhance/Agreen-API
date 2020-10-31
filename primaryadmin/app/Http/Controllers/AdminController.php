@@ -8,9 +8,27 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Hashing\BcryptHasher;
+use Illuminate\Support\Facades\Redis;
 
 class AdminController extends Controller
 {
+    public function getAdmins()
+    {
+        return response()->json(
+            DB::table('admin')
+            ->get()
+        );
+    }
+
+    public function getAdmin(Request $request)
+    {
+        return response()->json(
+            DB::table('admin')
+            ->where('ID',$request->ID)
+            ->get()
+        );
+    }
+
     public function createAdmin(Request $request)
     {
         $pass = Str::random(6);
